@@ -2,3 +2,7 @@ stomp
 facter
 json_pure
 daemons
+rack
+rack-protection
+tilt
+sinatra

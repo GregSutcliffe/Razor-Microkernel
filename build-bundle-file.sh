@@ -150,6 +150,7 @@ RUBY_GEMS_URL='http://production.cf.rubygems.org/rubygems/rubygems-1.8.24.tgz'
 #MCOLLECTIVE_URL='http://puppetlabs.com/downloads/mcollective/mcollective-1.2.1.tgz'
 MCOLLECTIVE_URL='http://puppetlabs.com/downloads/mcollective/mcollective-2.0.0.tgz'
 OPEN_VM_TOOLS_URL='https://github.com/downloads/puppetlabs/Razor-Microkernel/mk-open-vm-tools.tar.gz'
+FOREMAN_PROXY_URL='http://github.com/theforeman/smart-proxy/tarball/develop'
 
 # create a folder to hold the gzipped tarfile that will contain all of
 # dependencies
@@ -314,6 +315,24 @@ rm usr/local/mcollective usr/local/bin/mcollectived 2> /dev/null
 ln -s /usr/local/tce.installed/$mcoll_dir usr/local/mcollective
 ln -s /usr/local/mcollective/bin/mcollectived usr/local/bin/mcollectived
 cd $TOP_DIR
+
+file='smart-proxy.develop.tgz'
+proxy_dir='smart-proxy-develop'
+if [ $RE_USE_PREV_DL = 'no' ] || [ ! -f tmp-build-dir/$file ]
+then
+  wget -O tmp-build-dir/smart-proxy.develop.tgz $FOREMAN_PROXY_URL
+fi
+cd tmp-build-dir/usr/local/tce.installed
+rm -rf $proxy_dir 2> /dev/null && mkdir $proxy_dir
+tar zxvf $TOP_DIR/tmp-build-dir/$file -C $proxy_dir --strip-components=1
+cd $TOP_DIR/tmp-build-dir
+cp usr/local/tce.installed/$proxy_dir/config/settings.yml{.example,}
+sed -i 's/:tftp: false/:tftp: true/g' usr/local/tce.installed/$proxy_dir/config/settings.yml
+rm usr/local/smart-proxy usr/local/bin/smart-proxy 2> /dev/null
+ln -s /usr/local/tce.installed/$proxy_dir usr/local/smart-proxy
+ln -s /usr/local/smart-proxy/bin/smart-proxy usr/local/bin/smart-proxy
+cd $TOP_DIR
+cp -p foreman_register.sh tmp-build-dir/usr/local/bin
 
 # add a soft-link in what will become the /usr/local/sbin directory in the
 # Microkernel ISO (this fixes an issue with where Facter expects to find

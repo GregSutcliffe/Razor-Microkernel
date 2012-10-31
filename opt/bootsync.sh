@@ -22,4 +22,13 @@ then
   sudo /usr/local/etc/init.d/openssh start
 fi
 sudo /usr/local/bin/rz_mk_init.rb
+
+# Foreman Proxy
+sudo gem install sinatra
+cd /usr/local/tce.installed/smart-proxy-develop
+sudo ./bin/smart-proxy
+
+# Register with Foreman
+sudo /usr/local/bin/foreman_register.sh
+
 /opt/bootlocal.sh &

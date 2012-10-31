@@ -8,3 +8,4 @@ ruby.tcz
 lshw.tcz
 libssl-0.9.8.tcz
 firmware-bnx2.tcz
+curl.tcz
